@@ -11,14 +11,46 @@ const dateAttribute = '/gdc/md/xms7ga4tf3g3nzucd8380o2bev8oeknp/obj/2180';
 
 class App extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            startingYear: '2016',
+            endingYear: '2016',
+            startingMonth: '01',
+            endingMonth: '01',
+            startingDay: '01',
+            endingDay: '31'
+        }
+    }
+
+    daysInMonth(month, year) {
+        return new Date(year, month, 0).getDate();
+    }
+
+    getStartingDate() {
+        return this.state.startingYear + '-' + this.state.startingMonth + '-' + this.state.startingDay;
+    }
+
+    getEndingDate() {
+        return this.state.endingYear + '-' + this.state.endingMonth + '-' + this.state.endingDay;
+    }
+
+    onMonthSelectChange = (event) => {
+        this.setState({
+            startingMonth: event.target.value,
+            endingMonth: event.target.value,
+            endingDay: this.daysInMonth(event.target.value, this.state.endingYear)
+        }, function() {console.log(this.state);});
+    };
+
     getMonthFilter() {
         return {
             absoluteDateFilter: {
                 dataSet: {
                     uri: dateAttribute
                 },
-                from: '2016-01-01',
-                to: '2016-01-31'
+                from: this.getStartingDate(),
+                to: this.getEndingDate()
             }
 
         }
@@ -56,7 +88,7 @@ class App extends Component {
 
     renderDropdown() {
         return (
-            <select defaultValue="1">
+            <select onChange={this.onMonthSelectChange} defaultValue="1">
                 <option value="1">January</option>
                 <option value="2">February</option>
                 <option value="3">March</option>
